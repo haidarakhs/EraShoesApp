@@ -6,13 +6,12 @@ import 'package:ui_ecommerce/size_config.dart';
 const kPrimaryColor = Color(0xFFFF7643);
 const kPrimaryLightColor = Color(0xffffecdf);
 const kPrimaryGradientColor = LinearGradient(
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-  colors: [
-    Color(0xffffa53e),
-    Color(0xffff7643),
-  ]
-);
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xffffa53e),
+      Color(0xffff7643),
+    ]);
 
 const kSecondaryColor = Color(0xff979797);
 const kTextColor = Color(0xff757575);
@@ -40,4 +39,25 @@ const String kNameNullError = "Please Enter your name";
 const String kPhoneNumberNullError = "Please enter your phone number";
 const String kAddressNullError = "Please enter address";
 
+// otp style
 
+final otpDecoration = otpOutlineInputBorder();
+
+InputDecoration otpOutlineInputBorder() {
+  return InputDecoration(
+  contentPadding: EdgeInsets.symmetric(
+    vertical: getPropScreenWidth(15),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(color: kTextColor),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(color: kTextColor),
+  ),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(color: kTextColor),
+  ));
+}

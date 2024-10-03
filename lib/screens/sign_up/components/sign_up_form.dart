@@ -45,7 +45,7 @@ class _SignUpFormState extends State<SignUpForm> {
               if (errors.isEmpty) {
                 Navigator.pushNamed(context, CompleteProfileScreen.routeName);
               }
-            }
+            }, onPressed: () {  },
           ),
         ]
       ),

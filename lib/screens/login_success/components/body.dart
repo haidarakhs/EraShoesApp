@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui_ecommerce/components/my_default_button.dart';
+import 'package:ui_ecommerce/screens/home%20/home_screen.dart';
 import 'package:ui_ecommerce/size_config.dart';
 
 class Body extends StatelessWidget {
@@ -19,20 +19,29 @@ class Body extends StatelessWidget {
             style: TextStyle(
               fontSize: getPropScreenWidth(30),
               fontWeight: FontWeight.bold,
-              color: Colors.black
+              color: Colors.black,
             ),
           ),
           const Spacer(),
           SizedBox(
             width: SizeConfig.screenWidth * 0.6,
-            child: MyDefaultButton(
-              text: "Back to home",
-              press: () {
-                Navigator.pop(context);
+            height:SizeConfig.screenHeight * 0.1 ,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, 
+                backgroundColor: Colors.black,  // Ganti ukuran tombol
+                textStyle: TextStyle(
+                  fontSize: 20, 
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
               },
+              child: Text("Back to home"),
             ),
           ),
-          const Spacer()
+          const Spacer(),
         ],
       ),
     );

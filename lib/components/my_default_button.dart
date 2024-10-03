@@ -4,7 +4,7 @@ import 'package:ui_ecommerce/size_config.dart';
 
 class MyDefaultButton extends StatelessWidget {
   const MyDefaultButton({
-    super.key, required this.text, required this.press,
+    super.key, required this.text, required this.press, required Null Function() onPressed,
   });
 
   final String text;
