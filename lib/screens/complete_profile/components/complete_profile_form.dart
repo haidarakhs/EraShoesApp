@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:ui_ecommerce/components/custom_suffix_icon.dart';
+import 'package:ui_ecommerce/components/error_form.dart';
 import 'package:ui_ecommerce/components/my_default_button.dart';
+import 'package:ui_ecommerce/constant.dart';
 import 'package:ui_ecommerce/screens/otp/otp_screen.dart';
-
+import 'package:ui_ecommerce/size_config.dart';
 
 class CompleteProfileForm extends StatefulWidget {
-  const CompleteProfileForm({super.key});
+  const CompleteProfileForm({Key? key}) : super(key: key);
 
   @override
   State<CompleteProfileForm> createState() => _CompleteProfileFormState();
 }
 
 class _CompleteProfileFormState extends State<CompleteProfileForm> {
+  final _formKey = GlobalKey<FormState>();
+  List<String> errors = [];
   String? firstName;
   String? lastName;
-  String? email;
-  String? phoneNumber;
-  final _formKey = GlobalKey<FormState>();
-  final List<String> errors = [];
-
-  final String kNameNullError = "Please enter your name";
-  final String kEmailNullError = "Please enter your email";
-  final String kPhoneNumberNullError = "Please enter your phone number";
+  String? numberPhone;
+  String? address;
 
   @override
   Widget build(BuildContext context) {
@@ -28,34 +27,26 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
       key: _formKey,
       child: Column(
         children: [
-          firstNameFormField(),
-          SizedBox(
-            height: (20),
-          ),
-          lastNameFormField(),
-          SizedBox(
-            height: (20),
-          ),
-          phoneNumberFormField(),
-          SizedBox(
-            height: (20),
-          ),
+          firstNameForm(),
+          SizedBox(height: getProportionateScreenHeight(20)),
+          lastNameForm(),
+          SizedBox(height: getProportionateScreenHeight(20)),
+          phoneFormField(),
+          SizedBox(height: getProportionateScreenHeight(20)),
           addressFormField(),
-          SizedBox(
-            height: (20),
-          ),
+          SizedBox(height: getProportionateScreenHeight(20)),
+          ErrorForm(errors: errors),
+          SizedBox(height: getProportionateScreenHeight(20)),
           MyDefaultButton(
-            text: "next",
+            text: "Continue",
             press: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
+                if (errors.isEmpty) {
+                  Navigator.pushNamed(context, OtpScreen.routeName);
+                }
               }
-
-               if (errors.isEmpty) {
-               Navigator.pushNamed(context, OtpScreen.routeName);
-
-              }
-            }, onPressed: () {  },
+            }, backgroundColor: const Color.fromARGB(0, 0, 0, 0) ,
           ),
         ],
       ),
@@ -64,37 +55,47 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
 
   TextFormField addressFormField() {
     return TextFormField(
-      keyboardType: TextInputType.emailAddress,
+      onSaved: (newValue) => address = newValue,
       onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kEmailNullError)) {
+        if (value.isNotEmpty && errors.contains(kAddressNullError)) {
           setState(() {
-            errors.remove(kEmailNullError);
+            errors.remove(kAddressNullError);
           });
         }
       },
-      onSaved: (newValue) => email = newValue,
       validator: (value) {
-        if (value!.isEmpty) {
-          return kEmailNullError; // Return the error message
+        if (value!.isEmpty && !errors.contains(kAddressNullError)) {
+          setState(() {
+            errors.add(kAddressNullError);
+          });
+          return "";
         }
         return null;
       },
       decoration: InputDecoration(
         labelText: 'Address',
-        hintText: 'Enter your Address',
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: IconButton(
-          padding: EdgeInsets.all((16)),
-          onPressed: () {},
-          icon: const Icon(Icons.email_outlined),
+        labelStyle: TextStyle(color: Colors.white),
+        hintText: 'Enter Your Address',
+        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
+        suffixIcon: CustomSuffixIcon(
+          icon: 'assets/icons/Location point.svg',
+          size: 14,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 2.0),
         ),
       ),
     );
   }
 
-  TextFormField phoneNumberFormField() {
+  TextFormField phoneFormField() {
     return TextFormField(
-      keyboardType: TextInputType.phone,
+      onSaved: (newValue) => numberPhone = newValue,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(kPhoneNumberNullError)) {
           setState(() {
@@ -102,28 +103,40 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           });
         }
       },
-      onSaved: (newValue) => phoneNumber = newValue,
       validator: (value) {
-        if (value!.isEmpty) {
-          return kPhoneNumberNullError; // Return the error message
+        if (value!.isEmpty && !errors.contains(kPhoneNumberNullError)) {
+          setState(() {
+            errors.add(kPhoneNumberNullError);
+          });
+          return "";
         }
         return null;
       },
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: 'Phone Number',
-        hintText: 'Enter your Phone Number',
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: IconButton(
-          padding: EdgeInsets.all((16)),
-          onPressed: () {},
-          icon: const Icon(Icons.phone_outlined),
+        labelStyle: TextStyle(color: Colors.white),
+        hintText: 'Enter Your Phone Number',
+        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
+        suffixIcon: CustomSuffixIcon(
+          icon: 'assets/icons/Phone.svg',
+          size: 10,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 2.0),
         ),
       ),
     );
   }
 
-  TextFormField lastNameFormField() {
+  TextFormField lastNameForm() {
     return TextFormField(
+      onSaved: (newValue) => lastName = newValue,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(kNameNullError)) {
           setState(() {
@@ -131,28 +144,39 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           });
         }
       },
-      onSaved: (newValue) => lastName = newValue,
       validator: (value) {
-        if (value!.isEmpty) {
-          return kNameNullError; // Return the error message
+        if (value!.isEmpty && !errors.contains(kNameNullError)) {
+          setState(() {
+            errors.add(kNameNullError);
+          });
+          return "";
         }
         return null;
       },
       decoration: InputDecoration(
         labelText: 'Last Name',
-        hintText: 'Enter your Last Name',
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: IconButton(
-          padding: EdgeInsets.all((16)),
-          onPressed: () {},
-          icon: const Icon(Icons.account_circle_outlined),
+        labelStyle: TextStyle(color: Colors.white),
+        hintText: 'Enter Your Last Name',
+        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
+        suffixIcon: CustomSuffixIcon(
+          icon: 'assets/icons/User.svg',
+          size: 14,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 2.0),
         ),
       ),
     );
   }
 
-  TextFormField firstNameFormField() {
+  TextFormField firstNameForm() {
     return TextFormField(
+      onSaved: (newValue) => firstName = newValue,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(kNameNullError)) {
           setState(() {
@@ -160,24 +184,33 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           });
         }
       },
-      onSaved: (newValue) => firstName = newValue,
       validator: (value) {
-        if (value!.isEmpty) {
-          return kNameNullError; // Return the error message
+        if (value!.isEmpty && !errors.contains(kNameNullError)) {
+          setState(() {
+            errors.add(kNameNullError);
+          });
+          return "";
         }
         return null;
       },
       decoration: InputDecoration(
         labelText: 'First Name',
-        hintText: 'Enter your name',
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: IconButton(
-          padding: EdgeInsets.all((16)),
-          onPressed: () {},
-          icon: const Icon(Icons.account_circle_outlined),
+        labelStyle: TextStyle(color: Colors.white),
+        hintText: 'Enter Your First Name',
+        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
+        suffixIcon: CustomSuffixIcon(
+          icon: 'assets/icons/User.svg',
+          size: 14,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(color: Colors.white, width: 2.0),
         ),
       ),
     );
-    
   }
 }

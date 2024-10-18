@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:ui_ecommerce/components/my_default_button.dart';
 import 'package:ui_ecommerce/constant.dart';
 import 'package:ui_ecommerce/screens/otp/components/otp_form.dart';
 import 'package:ui_ecommerce/size_config.dart';
@@ -14,20 +11,26 @@ class Body extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: getPropScreenWidth(20)),
+        padding:
+            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
         child: Column(
           children: [
-            SizedBox(height: SizeConfig.screenHeight * 0.03),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.03,
+            ),
             Text(
               "OTP Verification",
               style: headingStyle,
             ),
-           
+            const Text(
+              'We Send Your Code to Your Number',
+              textAlign: TextAlign.center,
+            ),
             timer(),
-            SizedBox(height: SizeConfig.screenHeight * 0.15,),
-
-            OtpForm()
-          
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.15,
+            ),
+           const OtpForm()
           ],
         ),
       ),
@@ -36,26 +39,28 @@ class Body extends StatelessWidget {
 
   Row timer() {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "This Code will expired in  ",
-                textAlign: TextAlign.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          'This Code will expires in ',
+          textAlign: TextAlign.center,
+        ),
+        TweenAnimationBuilder(
+          tween: Tween(begin: 60.0, end: 0),
+          duration: const Duration(seconds: 60),
+          builder: (context, value, child) {
+            return Text(
+              "00:${value.toInt()}",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: kPrimaryColor,
               ),
-              TweenAnimationBuilder(
-                  tween: Tween(begin: 60.0, end: 0),
-                  duration: Duration(seconds: 60),
-                  builder: (context, value, child) {
-                    return Text("00:${value.toInt()}",
-                    style: TextStyle(
-                     fontWeight: FontWeight.bold
-                    ),
-                    );
-                  },
-                  onEnd: (){},
-                  )
-            ],
-          );
+            );
+          },
+          onEnd: () {},
+        )
+      ],
+    );
   }
 }
 

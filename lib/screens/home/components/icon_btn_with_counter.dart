@@ -1,63 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ui_ecommerce/constant.dart';
 
-import '../../../constant.dart';
 import '../../../size_config.dart';
 
 class IconBtnWithCounter extends StatelessWidget {
   const IconBtnWithCounter({
-    super.key, 
-    required this.svgSrc, 
-    required this.numOfItems,
+    super.key,
+    required this.svgSrc,
+    this.numOfitem = 0,
     required this.press,
   });
 
   final String svgSrc;
-  final int numOfItems;
-  final GestureTapCallback press; 
+  final int numOfitem;
+  final GestureTapCallback press;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: press, // Call the provided press function
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(100),
+      onTap: press,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Container(
-            padding: EdgeInsets.all(getPropScreenWidth(12)),
-            height: getPropScreenHeight(46),
-            width: getPropScreenWidth(46),
+            padding: EdgeInsets.all(getProportionateScreenWidth(12)),
+            height: getProportionateScreenWidth(46),
+            width: getProportionateScreenWidth(46),
             decoration: BoxDecoration(
               color: kSecondaryColor.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(svgSrc),
           ),
-          if (numOfItems > 0) 
+          if (numOfitem != 0)
             Positioned(
               top: -3,
               right: 0,
               child: Container(
-                height: getPropScreenHeight(16),
-                width: getPropScreenWidth(16),
+                height: getProportionateScreenWidth(16),
+                width: getProportionateScreenWidth(16),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFF4848),
+                  color: const Color(0xFFFF4848),
                   shape: BoxShape.circle,
                   border: Border.all(width: 1.5, color: Colors.white),
                 ),
                 child: Center(
                   child: Text(
-                    numOfItems.toString(), // Use numOfItems instead of hardcoded value
+                    "$numOfitem",
                     style: TextStyle(
-                      fontSize: getPropScreenWidth(10),
-                      color: Colors.white,
+                      fontSize: getProportionateScreenWidth(10),
                       height: 1,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ),
-            ),
+            )
         ],
       ),
     );

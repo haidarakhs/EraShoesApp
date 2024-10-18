@@ -5,6 +5,8 @@ import 'package:ui_ecommerce/screens/sign_in/components/sign_in_form.dart';
 import 'package:ui_ecommerce/screens/sign_up/sign_up_screen.dart';
 import 'package:ui_ecommerce/size_config.dart';
 
+// Body Sign IN
+
 class Body extends StatefulWidget {
   const Body({super.key});
 
@@ -21,22 +23,27 @@ class _BodyState extends State<Body> {
         child: SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: getPropScreenWidth(20)),
+        padding:
+            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: SizeConfig.screenWidth * 0.06),
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.06,
+              ),
               Text(
-                "Welcome Back",
+                'Welcome Back',
                 style: TextStyle(
-                  fontSize: getPropScreenWidth(28),
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: getProportionateScreenWidth(28),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
               const Text(
-                "Sign in with your email and password \nor continue with social media",
+                'Sign in with you Email and Password \nor continue with social media',
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white
+                ),
               ),
               SizedBox(
                 height: SizeConfig.screenHeight * 0.06,
@@ -49,30 +56,32 @@ class _BodyState extends State<Body> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SocialMediaIcon(
-                    icon: "assets/icons/google-icon.svg",
+                    icon: 'assets/icons/google-icon.svg',
                     press: () {},
                   ),
                   SocialMediaIcon(
-                    icon: "assets/icons/facebook-2.svg",
+                    icon: 'assets/icons/facebook-2.svg',
                     press: () {},
                   ),
                   SocialMediaIcon(
-                    icon: "assets/icons/twitter.svg",
+                    icon: 'assets/icons/twitter.svg',
                     press: () {},
                   ),
                 ],
               ),
-              SizedBox(height: getPropScreenHeight(20)),
+              SizedBox(
+                height: getProportionateScreenHeight(20),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? "),
+                  const Text("Dont have an account? ", style: TextStyle(color: Colors.white),),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, SignUpScreen.routeName);
-                    },
-                    child: const Text("Sign Up", style: TextStyle(color: kPrimaryColor))
-                  )
+                      onTap: () {
+                        Navigator.pushNamed(context, SignUpScreen.routeName);
+                      },
+                      child: const Text("Sign Up",
+                          style: TextStyle(color: Color.fromARGB(255, 207, 206, 206))))
                 ],
               )
             ],
@@ -82,6 +91,3 @@ class _BodyState extends State<Body> {
     ));
   }
 }
-
-
-
