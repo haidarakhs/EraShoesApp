@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
+import 'package:ui_ecommerce/constant.dart';
+import 'package:ui_ecommerce/model/products.dart';
+import 'package:ui_ecommerce/size_config.dart';
+import 'package:ui_ecommerce/state_managements/favourite_provider.dart';
+
+class DetailDescription extends StatelessWidget {
+  const DetailDescription({
+    super.key,
+    required this.product,
+  });
+
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: getPropScreenWidth(20)),
+          child: Text(
+            product.title, 
+            style: TextStyle(
+              fontSize: getPropScreenWidth(20),
+            )
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            padding: EdgeInsets.all(getPropScreenWidth(15)),
+            width: getPropScreenWidth(64),
+            decoration: BoxDecoration(
+              color: kPrimaryColor.withOpacity(0.2),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+              )
+            ),
+            child: Consumer<FavouriteProvider>(
+              builder: (context, favourite, child) =>  InkWell(
+                onTap: () {
+                  favourite.toggleFavouriteStatus(product.id);
+                },
+                child: Icon(
+                  Icons.favorite,
+                  size: getPropScreenWidth(18),
+                  color: product.isFavourite
+                      ? Colors.redAccent
+                      : kSecondaryColor.withOpacity(0.5),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+            left: getPropScreenWidth(20),
+            right: getPropScreenWidth(64),
+          ),
+          child: ReadMoreText(
+            product.description,
+            trimMode: TrimMode.Line, 
+            trimLines: 2,
+            colorClickableText: kPrimaryColor,
+            trimCollapsedText: "\nSee more details",
+            trimExpandedText: "\nSee less details",
+            lessStyle: seeMoreStyle,
+            moreStyle: seeMoreStyle,
+          ),
+        )
+      ],
+    );
+  }
+}

@@ -4,9 +4,7 @@ import 'package:ui_ecommerce/size_config.dart';
 
 class SplashContent extends StatelessWidget {
   const SplashContent({
-    super.key,
-    required this.text,
-    required this.image,
+    super.key, required this.text, required this.image
   });
 
   final String text, image;
@@ -17,27 +15,26 @@ class SplashContent extends StatelessWidget {
       children: [
         const Spacer(),
         Text(
-          'Cannabis',
+          'EraShoes',
           style: TextStyle(
-              fontSize: getProportionateScreenWidth(40),
-              color: const Color.fromARGB(255, 255, 255, 255),
-              fontWeight: FontWeight.bold,
-              ),
+            fontSize: getPropScreenWidth(36),
+            color: kPrimaryColor,
+            fontFamily: 'Sirukota', 
+          ),
         ),
         Text(
           text,
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: getProportionateScreenWidth(14),
-              color: kSecondaryColor),
+              fontSize: getPropScreenWidth(14), color: kSecondaryColor),
         ),
         const Spacer(
           flex: 2,
         ),
         Image.asset(
           image,
-          height: getProportionateScreenHeight(265),
-          width: getProportionateScreenWidth(235),
+          height: getPropScreenHeight(265),
+          width: getPropScreenWidth(235),
         ),
       ],
     );

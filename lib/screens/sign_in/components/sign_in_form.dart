@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ui_ecommerce/components/custom_suffix_icon.dart';
 import 'package:ui_ecommerce/components/error_form.dart';
+import 'package:ui_ecommerce/components/my_default_button.dart';
 import 'package:ui_ecommerce/constant.dart';
 import 'package:ui_ecommerce/screens/forgot_password/forgot_password_screen.dart';
-import 'package:ui_ecommerce/screens/home/home_screen.dart';
 import 'package:ui_ecommerce/screens/login_success/login_success_screen.dart';
 import 'package:ui_ecommerce/size_config.dart';
+import 'package:ui_ecommerce/state_managements/auth_provider.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -15,95 +17,71 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<SignInForm> {
-  bool remember = false;
-  final _formKey = GlobalKey<FormState>();
+  final _frontKey = GlobalKey<FormState>();
   String? email;
   String? password;
   final List<String> errors = [];
 
+  bool remember = false;
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          // Email field
-          emailFormFIeld(),
-          SizedBox(height: getProportionateScreenHeight(30)),
-          // Password field
-          passwordFormField(),
-          SizedBox(height: getProportionateScreenHeight(30)),
-          rememberAndForgot(),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          ErrorForm(errors: errors),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          signInButton(), // Sign In button
-        ],
-      ),
-    );
+        key: _frontKey,
+        child: Column(
+          children: [
+            // email field
+            emailFormField(),
+            SizedBox(height: getPropScreenHeight(30)),
+            // password field
+            passwordFormField(),
+            SizedBox(height: getPropScreenHeight(30)),
+            rememberAndForgot(),
+            SizedBox(height: getPropScreenHeight(20)),
+            ErrorForm(errors: errors),
+            SizedBox(height: getPropScreenHeight(20)),
+            MyDefaultButton(
+              text: "Sign In",
+              press: () {
+                if (_frontKey.currentState!.validate()) {
+                  _frontKey.currentState!.save();
+                }
+
+                if (errors.isEmpty) {
+                  Provider.of<AuthProvider>(context, listen: false).setAuth(true, email : email);
+                  Navigator.pushNamed(context, LoginSuccessScreen.routeName);
+                }
+              },
+            )
+          ],
+        ));
   }
 
   Row rememberAndForgot() {
     return Row(
-      children: [
-        Checkbox(
-          value: remember,
-          onChanged: (value) {
-            setState(() {
-              remember = value!;
-            });
-          },
-          activeColor: const Color.fromARGB(255, 194, 193, 193),
-        ),
-        const Text('Remember me', style: TextStyle(color: Colors.white)),
-        const Spacer(),
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
-          },
-          child: const Text(
-            'Forgot Password',
-            style: TextStyle(
-              decoration: TextDecoration.underline,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Re-designed Sign In Button with Border
-  Widget signInButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: getProportionateScreenHeight(56),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          side: BorderSide(color: Colors.white), // Border color
-          backgroundColor: Colors.transparent, // Background transparent
-        ),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-            if (errors.isEmpty) {
-              Navigator.pushNamed(context, HomeScreen.routeName);
-            }
-          }
-        },
-        child: const Text(
-          "Sign In",
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.white, // Button text color
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+                children: [
+                  Checkbox(
+                    value: remember,
+                    onChanged: (value) {
+                      setState(() {
+                        remember = value!;
+                      });
+                    },
+                    activeColor: kPrimaryColor,
+                  ),
+                  const Text("Remember Me"),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
+                    },
+                    child: const Text(
+                      "Forgot Password", style: TextStyle(
+                        decoration: TextDecoration.underline
+                      ),
+                    ),
+                  ),
+                ],
+              );
   }
 
   TextFormField passwordFormField() {
@@ -118,6 +96,7 @@ class _SignInFormState extends State<SignInForm> {
             errors.remove(kShortPassError);
           });
         }
+        return;
       },
       validator: (value) {
         if (value!.isEmpty && !errors.contains(kPassNullError)) {
@@ -125,59 +104,38 @@ class _SignInFormState extends State<SignInForm> {
             errors.add(kPassNullError);
           });
           return "";
-        } else if (value.length < 8 &&
-            (!errors.contains(kShortPassError) &&
-                !errors.contains(kPassNullError))) {
+        }  else if (value.length < 8 && (!errors.contains(kShortPassError) && !errors.contains(kPassNullError))) {
           setState(() {
             errors.add(kShortPassError);
           });
           return "";
         }
-        return null;
       },
       obscureText: true,
-      style: const TextStyle(color: Colors.white), // Input text color
-      decoration: InputDecoration(
-        labelText: "Password",
-        hintText: "Enter Your Password",
-        labelStyle: const TextStyle(
-          color: Colors.white, // Label color
-          fontSize: 16, // Label font size
-        ),
-        hintStyle: const TextStyle(
-          color: Colors.grey, // Hint color
-        ),
-        suffixIcon: const CustomSuffixIcon(
-          icon: "assets/icons/Lock.svg",
-          size: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: Colors.white), // Border color
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: Colors.white), // Border color
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
+      decoration: const InputDecoration(
+          labelText: "Password",
+          hintText: "Your password here",
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: CustomSuffixIcon(
+            icon: "assets/icons/Lock.svg",
+          )),
     );
   }
 
-  TextFormField emailFormFIeld() {
+  TextFormField emailFormField() {
     return TextFormField(
       onSaved: (newValue) => email = newValue,
       onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kEmailNullError)) {
+        if (value!.isNotEmpty && errors.contains(kEmailNullError)) {
           setState(() {
             errors.remove(kEmailNullError);
           });
-        } else if (emailValidatorRegExp.hasMatch(value) &&
-            errors.contains(kInvalidEmailError)) {
+        } else if (emailValidatorRegExp.hasMatch(value) && errors.contains(kInvalidEmailError)) {
           setState(() {
             errors.remove(kInvalidEmailError);
           });
         }
+        return;
       },
       validator: (value) {
         if (value!.isEmpty && !errors.contains(kEmailNullError)) {
@@ -185,9 +143,7 @@ class _SignInFormState extends State<SignInForm> {
             errors.add(kEmailNullError);
           });
           return "";
-        } else if (!emailValidatorRegExp.hasMatch(value) &&
-            (!errors.contains(kPassNullError)) &&
-            !errors.contains(kInvalidEmailError)) {
+        } else if (!emailValidatorRegExp.hasMatch(value) && (!errors.contains(kPassNullError) && !errors.contains(kInvalidEmailError))) {
           setState(() {
             errors.add(kInvalidEmailError);
           });
@@ -196,31 +152,13 @@ class _SignInFormState extends State<SignInForm> {
         return null;
       },
       keyboardType: TextInputType.emailAddress,
-      style: const TextStyle(color: Colors.white), // Input text color
-      decoration: InputDecoration(
-        labelText: "Email",
-        hintText: "Enter Your Email",
-        labelStyle: const TextStyle(
-          color: Colors.white, // Label color
-          fontSize: 16, // Label font size
-        ),
-        hintStyle: const TextStyle(
-          color: Colors.grey, // Hint color
-        ),
-        suffixIcon: const CustomSuffixIcon(
-          icon: "assets/icons/Mail.svg",
-          size: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: Colors.white), // Border color
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: Colors.white), // Border color
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
+      decoration: const InputDecoration(
+          labelText: "Email",
+          hintText: "Your email here",
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: CustomSuffixIcon(
+            icon: "assets/icons/Mail.svg",
+          )),
     );
   }
 }

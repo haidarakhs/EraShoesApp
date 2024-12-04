@@ -7,19 +7,20 @@ import 'package:ui_ecommerce/screens/otp/otp_screen.dart';
 import 'package:ui_ecommerce/size_config.dart';
 
 class CompleteProfileForm extends StatefulWidget {
-  const CompleteProfileForm({Key? key}) : super(key: key);
+  const CompleteProfileForm({super.key});
 
   @override
   State<CompleteProfileForm> createState() => _CompleteProfileFormState();
 }
 
 class _CompleteProfileFormState extends State<CompleteProfileForm> {
+  String? firstName;
+  String? lastName;  
+  String? phoneNumber;  
+  String? address;  
+
   final _formKey = GlobalKey<FormState>();
   List<String> errors = [];
-  String? firstName;
-  String? lastName;
-  String? numberPhone;
-  String? address;
 
   @override
   Widget build(BuildContext context) {
@@ -27,28 +28,29 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
       key: _formKey,
       child: Column(
         children: [
-          firstNameForm(),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          lastNameForm(),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          phoneFormField(),
-          SizedBox(height: getProportionateScreenHeight(20)),
+          firstNameFormField(),
+          SizedBox(height: getPropScreenHeight(20)),
+          lastNameFormField(),
+          SizedBox(height: getPropScreenHeight(20)),
+          phoneNumberFormField(),
+          SizedBox(height: getPropScreenHeight(20)),
           addressFormField(),
-          SizedBox(height: getProportionateScreenHeight(20)),
+          SizedBox(height: getPropScreenHeight(20)),
           ErrorForm(errors: errors),
-          SizedBox(height: getProportionateScreenHeight(20)),
+          SizedBox(height: getPropScreenHeight(20)),
           MyDefaultButton(
             text: "Continue",
             press: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                if (errors.isEmpty) {
-                  Navigator.pushNamed(context, OtpScreen.routeName);
-                }
               }
-            }, backgroundColor: const Color.fromARGB(0, 0, 0, 0) ,
+
+              if (errors.isEmpty) {
+                Navigator.pushNamed(context, OtpScreen.routeName);
+              }
+            }
           ),
-        ],
+        ]
       ),
     );
   }
@@ -57,7 +59,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
     return TextFormField(
       onSaved: (newValue) => address = newValue,
       onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kAddressNullError)) {
+        if (value!.isNotEmpty && errors.contains(kAddressNullError)) {
           setState(() {
             errors.remove(kAddressNullError);
           });
@@ -72,145 +74,105 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         }
         return null;
       },
-      decoration: InputDecoration(
-        labelText: 'Address',
-        labelStyle: TextStyle(color: Colors.white),
-        hintText: 'Enter Your Address',
-        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-        suffixIcon: CustomSuffixIcon(
-          icon: 'assets/icons/Location point.svg',
-          size: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 1.5),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 2.0),
-        ),
+      decoration: const InputDecoration(
+        labelText: "Address",
+          hintText: "Your address here",
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: CustomSuffixIcon(
+            icon: "assets/icons/Location point.svg",
+          )
       ),
     );
   }
 
-  TextFormField phoneFormField() {
+  TextFormField phoneNumberFormField() {
     return TextFormField(
-      onSaved: (newValue) => numberPhone = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kPhoneNumberNullError)) {
-          setState(() {
-            errors.remove(kPhoneNumberNullError);
-          });
-        }
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(kPhoneNumberNullError)) {
-          setState(() {
-            errors.add(kPhoneNumberNullError);
-          });
-          return "";
-        }
-        return null;
-      },
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: 'Phone Number',
-        labelStyle: TextStyle(color: Colors.white),
-        hintText: 'Enter Your Phone Number',
-        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-        suffixIcon: CustomSuffixIcon(
-          icon: 'assets/icons/Phone.svg',
-          size: 10,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 1.5),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 2.0),
-        ),
-      ),
-    );
+        onSaved: (newValue) => phoneNumber = newValue,
+        onChanged: (value) {
+          if (value!.isNotEmpty && errors.contains(kPhoneNumberNullError)) {
+            setState(() {
+              errors.remove(kPhoneNumberNullError);
+            });
+          }
+        },
+        validator: (value) {
+          if (value!.isEmpty && !errors.contains(kPhoneNumberNullError)) {
+            setState(() {
+              errors.add(kPhoneNumberNullError);
+            });
+            return "";
+          }
+          return null;
+        },
+        keyboardType: TextInputType.number,
+        decoration: const InputDecoration(
+            labelText: "Phone Number",
+            hintText: "Your phone number here",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: CustomSuffixIcon(
+              icon: "assets/icons/Phone.svg",
+            )
+          ),
+        );
   }
 
-  TextFormField lastNameForm() {
+  TextFormField lastNameFormField() {
     return TextFormField(
-      onSaved: (newValue) => lastName = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kNameNullError)) {
-          setState(() {
-            errors.remove(kNameNullError);
-          });
-        }
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(kNameNullError)) {
-          setState(() {
-            errors.add(kNameNullError);
-          });
-          return "";
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        labelText: 'Last Name',
-        labelStyle: TextStyle(color: Colors.white),
-        hintText: 'Enter Your Last Name',
-        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-        suffixIcon: CustomSuffixIcon(
-          icon: 'assets/icons/User.svg',
-          size: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 1.5),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 2.0),
-        ),
-      ),
-    );
+        onSaved: (newValue) => lastName = newValue,
+        onChanged: (value) {
+          if (value!.isNotEmpty && errors.contains(kNameNullError)) {
+            setState(() {
+              errors.remove(kNameNullError);
+            });
+          }
+        },
+        validator: (value) {
+          if (value!.isEmpty && !errors.contains(kNameNullError)) {
+            setState(() {
+              errors.add(kNameNullError);
+            });
+            return "";
+          }
+          return null;
+        },
+        decoration: const InputDecoration(
+            labelText: "Last Name",
+            hintText: "Your last name here",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: CustomSuffixIcon(
+              icon: "assets/icons/User.svg",
+            )
+          ),
+        );
   }
 
-  TextFormField firstNameForm() {
+  TextFormField firstNameFormField() {
     return TextFormField(
-      onSaved: (newValue) => firstName = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(kNameNullError)) {
-          setState(() {
-            errors.remove(kNameNullError);
-          });
-        }
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(kNameNullError)) {
-          setState(() {
-            errors.add(kNameNullError);
-          });
-          return "";
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        labelText: 'First Name',
-        labelStyle: TextStyle(color: Colors.white),
-        hintText: 'Enter Your First Name',
-        contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-        suffixIcon: CustomSuffixIcon(
-          icon: 'assets/icons/User.svg',
-          size: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 1.5),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.white, width: 2.0),
-        ),
-      ),
-    );
+        onSaved: (newValue) => firstName = newValue,
+        onChanged: (value) {
+          if (value!.isNotEmpty && errors.contains(kNameNullError)) {
+            setState(() {
+              errors.remove(kNameNullError);
+            });
+          }
+        },
+        validator: (value) {
+          if (value!.isEmpty && !errors.contains(kNameNullError)) {
+            setState(() {
+              errors.add(kNameNullError);
+            });
+            return "";
+          }
+          return null;
+        },
+        decoration: const InputDecoration(
+            labelText: "First Name",
+            hintText: "Your first name here",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: CustomSuffixIcon(
+              icon: "assets/icons/User.svg",
+            )
+          ),
+        );
   }
 }
